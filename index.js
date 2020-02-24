@@ -43,34 +43,34 @@ const createDestFunc = createDestPath
  * @param allArgsDict dictionary of all arguments
  */
 const getFieldArgsDict = (field, duplicateArgCounts, allArgsDict = {}) => field.args.reduce((o, arg) => {
-    if (arg.name in duplicateArgCounts) {
-      const index = duplicateArgCounts[arg.name] + 1;
-      duplicateArgCounts[arg.name] = index;
-      o[`${arg.name}${index}`] = arg;
-    } else if (allArgsDict[arg.name]) {
-      duplicateArgCounts[arg.name] = 1;
-      o[`${arg.name}1`] = arg;
-    } else {
-      o[arg.name] = arg;
-    }
-    return o;
-  }, {});
+  if (arg.name in duplicateArgCounts) {
+    const index = duplicateArgCounts[arg.name] + 1;
+    duplicateArgCounts[arg.name] = index;
+    o[`${arg.name}${index}`] = arg;
+  } else if (allArgsDict[arg.name]) {
+    duplicateArgCounts[arg.name] = 1;
+    o[`${arg.name}1`] = arg;
+  } else {
+    o[arg.name] = arg;
+  }
+  return o;
+}, {});
 
 /**
  * Generate variables string
  * @param dict dictionary of arguments
  */
 const getArgsToVarsStr = dict => Object.entries(dict)
-    .map(([varName, arg]) => `${arg.name}: $${varName}`)
-    .join(', ');
+  .map(([varName, arg]) => `${arg.name}: $${varName}`)
+  .join(', ');
 
 /**
  * Generate types string
  * @param dict dictionary of arguments
  */
 const getVarsToTypesStr = dict => Object.entries(dict)
-    .map(([varName, arg]) => `$${varName}: ${arg.type}`)
-    .join(', ');
+  .map(([varName, arg]) => `$${varName}: ${arg.type}`)
+  .join(', ');
 
 /**
  * Generate the query for the specified field
@@ -155,18 +155,18 @@ const generateQuery = (
       })
       .map(
         cur => generateQuery(
-            cur,
-            curType,
-            curName,
-            argumentsDict,
-            duplicateArgCounts,
-            crossReferenceKeyList,
-            curDepth + 1,
-            field,
-            [...curPath, cur],
-            rootName,
-            rootTypeName,
-          ).queryStr,
+          cur,
+          curType,
+          curName,
+          argumentsDict,
+          duplicateArgCounts,
+          crossReferenceKeyList,
+          curDepth + 1,
+          field,
+          [...curPath, cur],
+          rootName,
+          rootTypeName,
+        ).queryStr,
       )
       .filter(cur => cur)
       .join('\n');
@@ -223,18 +223,18 @@ const generateQuery = (
           })
           .map(
             cur => generateQuery(
-                cur,
-                valueType,
-                curName,
-                argumentsDict,
-                duplicateArgCounts,
-                crossReferenceKeyList,
-                curDepth + 2,
-                field,
-                [...curPath, cur],
-                rootName,
-                rootTypeName,
-              ).queryStr,
+              cur,
+              valueType,
+              curName,
+              argumentsDict,
+              duplicateArgCounts,
+              crossReferenceKeyList,
+              curDepth + 2,
+              field,
+              [...curPath, cur],
+              rootName,
+              rootTypeName,
+            ).queryStr,
           )
           .filter(cur => cur)
           .join('\n');
@@ -291,7 +291,7 @@ const generateFile = (obj, description) => {
 
       fs.writeFileSync(
         path.join(destDirPath, dest),
-        `const gql = require('graphql-tag');\n\nmodule.exports = gql\`${query}\`;`,
+        `const gql = require('graphql-tag');\n\nconst q = gql\`${query}\`;\n\nexport default q;`,
       );
     }
   });
